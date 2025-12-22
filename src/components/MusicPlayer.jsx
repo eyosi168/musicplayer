@@ -17,6 +17,7 @@ function MusicPlayer() {
     pause,
     volume,
     setVolume,
+    
   } = useMusic();
   const audioRef = useRef(null);
   const handleTimeChange = (e) => {

@@ -100,15 +100,25 @@ export const MusicProvider = ({ children }) => {
     const seconds = Math.floor(time % 60);
     return ` ${minutes} : ${seconds.toString().padStart(2, "0")}`;
   };
-  const createPlaylist = (name)=>{
+  const createPlaylist = (name) => {
     const newPlaylist = {
-      id : Date.now(),
+      id: Date.now(),
       name,
       songs: [],
-
-    }
-    setPlaylists((prev)=>[...prev,newPlaylist]);
-  }
+    };
+    setPlaylists((prev) => [...prev, newPlaylist]);
+  };
+  const addSongToPlaylist = (playlistId, song) => {
+    setPlaylists((prev) =>
+      prev.map((playlist) => {
+        if (playlist.id === playlistId) {
+          return { ...playlist, songs: [...playlist.songs, song] };
+        } else {
+          return playlist;
+        }
+      })
+    );
+  };
   const play = () => setIsPlaying(true);
   const pause = () => setIsPlaying(false);
   return (
@@ -131,7 +141,9 @@ export const MusicProvider = ({ children }) => {
         volume,
         setVolume,
         createPlaylist,
-        playlists
+        playlists,
+        addSongToPlaylist,
+        setCurrentTrack
       }}
     >
       {children}
