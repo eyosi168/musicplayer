@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const MusicContext = createContext();
 export const MusicProvider = ({ children }) => {
@@ -68,6 +68,25 @@ export const MusicProvider = ({ children }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [playlists, setPlaylists] = useState([]);
+
+  useEffect(()=>{
+    const savedplaylists = localStorage.getItem("musicPlayerPlaylists")
+    if(savedplaylists){
+      const playlists = JSON.parse(savedplaylists)
+      setPlaylists(playlists)
+    } else {
+      localStorage.removeItem("musicPlayerPlaylists")
+    }
+  },[])
+
+   useEffect(()=>{
+    if(playlists.length > 0) {
+      localStorage.setItem("musicPlayerPlaylists", JSON.stringify(playlists))
+    }
+   },[playlists])
+
+
+
   const handlePlaySong = (song, index) => {
     setCurrentTrack(song);
     setCurrentTrackIndex(index);
@@ -108,6 +127,11 @@ export const MusicProvider = ({ children }) => {
     };
     setPlaylists((prev) => [...prev, newPlaylist]);
   };
+  const deletePlaylist = (playlistId) => {
+    setPlaylists((prev) =>
+      prev.filter((playlist) => playlist.id !== playlistId)
+    );
+  };
   const addSongToPlaylist = (playlistId, song) => {
     setPlaylists((prev) =>
       prev.map((playlist) => {
@@ -143,7 +167,8 @@ export const MusicProvider = ({ children }) => {
         createPlaylist,
         playlists,
         addSongToPlaylist,
-        setCurrentTrack
+        setCurrentTrack,
+        deletePlaylist
       }}
     >
       {children}

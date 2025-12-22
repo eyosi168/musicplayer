@@ -14,7 +14,8 @@ function Playlists() {
     addSongToPlaylist,
     currentTrackIndex,
     setCurrentTrack,
-    handlePlaySong
+    handlePlaySong,
+    deletePlaylist
   } = useMusic();
   const filteredSongs = allSongs.filter((song) => {
     const matches =
@@ -42,8 +43,12 @@ function Playlists() {
   };
   const handlePlayFromPlaylist = (song)=>{
     const globalIndex = allSongs.findIndex((s)=> s.id === song.id)
-    setCurrentTrack(allSongs[globalIndex])
-    set
+    handlePlaySong(song,globalIndex)
+  }
+  const deletePlaylistConformation= (playlist)=>{
+    if(window.confirm(`are you sure to delete "${playlist.name}"?`)){
+      deletePlaylist(playlist.id)
+    }
   }
 
   return (
@@ -73,7 +78,7 @@ function Playlists() {
               <div className="playlist-header">
                 <h3>{playlist.name}</h3>
                 <div className="playlist-actions">
-                  <button className="delete-playlist-btn">Delete</button>
+                  <button className="delete-playlist-btn" onClick={()=>deletePlaylistConformation(playlist)}>Delete</button>
                 </div>
               </div>
               {/* add song search*/}
